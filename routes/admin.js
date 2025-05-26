@@ -59,9 +59,23 @@ AdminRouter.post("/createcourse",adminmiddleware,async(req,res)=>{
         })
     });
 
-AdminRouter.put("/editcourse",(req,res)=>{
+AdminRouter.put("/editcourse",adminmiddleware,async(req,res)=>{
+        const adminId = req.adminId;
+        const { title,description,price,imageUrl,courseId } = req.body;
+
+        //coursId check :
+        const course = await coursemodel.updateOne(
+            { _id : courseId, creatorId : adminId },       //courseid check
+            {
+                title,
+                description,
+                price,
+                imageUrl
+            }
+        )
         res.json({
-            message : "Editing course endpoint"
+            message : "course edited",
+            course_id : course._id
         })
     })
     
