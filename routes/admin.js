@@ -2,10 +2,11 @@ const express = require("express");
 const bcrypt = require('bcrypt');
 const AdminRouter = express.Router();
 const { adminmodel } = require("../db");
+const { coursemodel } = require("../db");
 require ('dotenv').config();
 const JWT = require('jsonwebtoken');
 const { adminmiddleware } = require("../middleware/admins");
-const JWT_admin_pass = process.env.JWT_pass;
+const JWT_admin_pass = process.env.JWT_admin_pass;
 
 AdminRouter.post("/signup",async (req,res)=>{
         const { email,password,firstName,LastName } = req.body;
@@ -79,9 +80,13 @@ AdminRouter.put("/editcourse",adminmiddleware,async(req,res)=>{
         })
     })
     
-AdminRouter.get("/courses",(req,res)=>{
+AdminRouter.get("/courses",adminmiddleware,async(req,res)=>{
+        const adminId = req.adminId;
+        const courses = await coursemodel.find({
+            creatorId : adminId,
+        })
         res.json({
-            message : "Getting course endpoint"
+            courses
         })
     })    
 
