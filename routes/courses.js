@@ -7,7 +7,8 @@ const CourseRouter = express.Router();
     
     
     CourseRouter.post("/purchase",usermiddleware,async (req,res)=>{
-        const { userId, courseId } = req.body;
+        const userId = req.userId;
+        const { courseId } = req.body;
 
         await purchasemodel.create({
             userId,courseId

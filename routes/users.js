@@ -44,6 +44,7 @@ UserRouter.post("/signin",async (req,res)=>{
 
 UserRouter.get("/purchases",usermiddleware,async (req,res)=>{
         const userId = req.userId;
+        console.log(userId);
         const purchases = await purchasemodel.find({ userId });
         res.json({
             courses_bought : purchases
