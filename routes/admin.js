@@ -4,6 +4,7 @@ const AdminRouter = express.Router();
 const { adminmodel } = require("../db");
 require ('dotenv').config();
 const JWT = require('jsonwebtoken');
+const { adminmiddleware } = require("../middleware/admins");
 const JWT_admin_pass = process.env.JWT_pass;
 
 AdminRouter.post("/signup",async (req,res)=>{
@@ -38,11 +39,25 @@ AdminRouter.post("/signin",async (req,res)=>{
     }
     })
 
-AdminRouter.post("/createcourse",(req,res)=>{
-        res.json({
-            message : "Creating course endpoint"
+AdminRouter.post("/createcourse",adminmiddleware,async(req,res)=>{
+    const adminId = req.adminId;
+    const { title,description,price,imageUrl } = req.body;
+    const course = await coursemodel.create({
+            title,
+            description,
+            price,
+            imageUrl,
+            creatorId : adminId
         })
-    })
+// a course in mongo will be => _id = new ObjectId(...), rest stuff!
+
+
+        res.json({
+            meessage :'course created',
+            course : title,
+            courseId : course._id
+        })
+    });
 
 AdminRouter.put("/editcourse",(req,res)=>{
         res.json({
